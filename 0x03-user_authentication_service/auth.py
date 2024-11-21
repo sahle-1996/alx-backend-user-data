@@ -29,6 +29,7 @@ class Auth:
     """Handles user authentication and session management."""
 
     def __init__(self):
+        """Initialize the Auth object."""
         self._db = DB()
 
     def register_user(self, email: str, password: str) -> User:
@@ -92,7 +93,7 @@ class Auth:
         try:
             user = self._db.find_user_by(email=email)
         except NoResultFound:
-            raise ValueError
+            raise ValueError("User not found")
 
         reset_token = _generate_uuid()
         self._db.update_user(user.id, reset_token=reset_token)
@@ -103,12 +104,13 @@ class Auth:
         Update a user's password using their reset token.
         """
         if not reset_token or not password:
-            return None
+            return
 
         try:
             user = self._db.find_user_by(reset_token=reset_token)
         except NoResultFound:
-            raise ValueError
+            raise ValueError("Invalid reset token")
 
         hashed_password = _hash_password(password)
-        self._db.update_user(user.id, hashed_password=hashed_password, reset_token=None)
+        self._db.update_user(user.id, hashed_password=hashed_password,
+                             reset_token=None)
