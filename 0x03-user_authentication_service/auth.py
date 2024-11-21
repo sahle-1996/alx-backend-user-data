@@ -2,7 +2,7 @@
 """
 Authentication Module
 """
-from bcrypt import hashpw, gensalt, checkpw
+from bcrypt import hashpw, gensalt
 from uuid import uuid4
 from typing import Optional
 
